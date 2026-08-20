@@ -391,7 +391,7 @@ im gonna start the investigation, the goal in this stage is to find the chain of
 
     Report: 
 
-    On 2024-03-26 09:24 (+03:00), the host Hilary (172.16.17.197) executed an obfuscated PowerShell command shortly after a phishing email was received from support@analogydispatch.top. The investigation identified a malicious execution chain involving a downloaded archive (patch.zip), a VBScript launcher (patch.vbs), an obfuscated PowerShell payload, and outbound communication with attacker-controlled infrastructure.
+    On 2024-03-26 09:24 (+03:00), the host Hilary (172.16.17.197) executed an obfuscated PowerShell command shortly after a phishing email was received from support[.]@analogydispatch.top. The investigation identified a malicious execution chain involving a downloaded archive (patch.zip), a VBScript launcher (patch.vbs), an obfuscated PowerShell payload, and outbound communication with attacker-controlled infrastructure.
 
     The activity indicates a successful phishing-based malware execution with fileless PowerShell techniques.
 
