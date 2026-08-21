@@ -407,3 +407,112 @@ im gonna start the investigation, the goal in this stage is to find the chain of
     - Perform a full endpoint malware scan and 
     - investigate for persistence mechanisms.
             
+# Case 5
+![alt text](image.png)
+    
+in this case, the alert trigger is sudoers file modificiation detected.
+
+sudoers file modification is the process of changing the /etc/sudoers file or adding files to /etc/sudoers.d/ on Unix-like systems.
+
+
+first move is to collecting artifact based on the logs.
+
+- Collecting IOC
+
+    - Hostname: Kristine
+    - IP Address: 172.16.17.129 - IPv4 - Private
+    - Alert Type: Brute Force
+    - L1 notes: "I saw a Brute Force attempt with different users from the IP 149.88.25.133 towards the system."
+    - Command Line: sudo cat /etc/sudoers -> Read sudoers file in etc directory with admin privileges.
+
+The attack is already happen, and i need to determine whether this attack was succesful or not.
+
+to determine the completion of an attack, im using log management to investigate the IP given by L1 149.88.25.133.
+
+before going to investigation, i need to confirm this is an actual attack from suspicious IP.
+
+- Evidence 1 - Threat Intelligence Result
+    
+    Im using VirusTotal and AbuseIPDB to check the IP given by the L1. and here's is the result
+
+    ![alt text](<screenshot/Screenshot 2026-08-21 at 7.49.40 AM.png>)
+
+    ![alt text](<screenshot/Screenshot 2026-08-21 at 7.51.21 AM.png>)
+
+    based on this result it indicates that IP is suspicious
+- Investigation
+    
+    This investigation will using the LetsDefend log management. My starting point is to see the log activity from 149.88.25.133.
+
+    The goal here is to determine the completion of an attack, see the behavior, and cheking if this IP is also attacking another device.
+
+    - Evidence 2 - Brute Force Attempt - Log Management   
+
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 7.56.41 AM.png>)
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 8.00.44 AM.png>)
+
+        based on this log, this is confirming a brute force attack.
+        IP 149.88.25.133  initiated multiple attempts againts internal host 172.16.17.129 on TCP port 22(SSH). Multiple failed login attempt indicating the brute force is targeting user credentials.
+
+
+    -   Evidence 3 - Brute Force Succes - Log Management
+
+        the latest logs from this IP is Accepted password
+
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 8.05.51 AM.png>)
+
+        now we have prove that brute force attempt by IP 149.88.25.133 to IP 172.16.17.129 via SSH are succesful.
+
+    The brute force attempt are succesful. now, im investigating the log from IP 172.16.17.129.
+
+    - Evidence 4 - Audit Log - Log Management
+
+        I found an interesting log sequence here,
+
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 8.12.28 AM.png>)
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 8.20.11 AM.png>)
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 8.20.37 AM.png>)
+        ![alt text](<screenshot/Screenshot 2026-08-21 at 8.31.39 AM.png>)
+
+        this is an audit log based on terminal command. based on this log the command sqequence are: 
+
+        - sudo useradd -m letsdefend1 --> creating a new user letsdefend1
+        - sudo psswd letsdefend1 --> set the password or changed password
+        - sudo cat /etc/sudoers --> read the /etc/sudoers file
+        - sudo visudo --> edit sudoers file  
+
+        based on this command, sudoers file has been viewed and opened. It's indicating an attempt or review sudo privileges.
+
+    to determine the impact of the attack, im doing investigation on Kristine - endpoint.
+
+    - Evidence 5 - Full Command Sequence - Endpoint Security
+
+    ![alt text](<screenshot/Screenshot 2026-08-21 at 8.42.08 AM.png>)
+
+    command analysis: 
+    - groups letdefend1 --> confirming whether user belongs to privileged group
+    - getent passwd --> for enumerate local user
+
+
+- Report
+
+    Verdict: TRUE POSITIVE
+
+    Report: 
+
+    At 2024-09-20T06:35:12+03:00, IP 149.88.25.133 performed credentials brute force attempt to IP 172.16.17.129 via SSH. The attempt is succesful, attacker creating a new user named letsdefend1 and manage to viewed /etc/sudoers file. 
+    the command sudo visudo is confirming that the attacker has access the sudoers configuration through visudo. later, the command groups letsdefend1 and getent passwd confirming of discovery phase of an attack.
+
+- Remediation
+    
+    4 Phase: 
+    - Containment --> stop attack from spreading -> block the malicious source IP address 149.88.25.133 at the firewall or IDS/IPS. terminate any active SSH sessions associated with the attacker.
+
+    - Eradication --> remove access or malware --> reset password of compromised letsdefende1 account
+
+    - Recovery --> restore normal operations safely --> re enable connection and confirming that only authorized user could have privileges
+    
+    - Hardening --> prevent the same attack --> enable SSH key authentication
+
+    
+        
