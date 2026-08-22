@@ -408,7 +408,7 @@ im gonna start the investigation, the goal in this stage is to find the chain of
     - investigate for persistence mechanisms.
             
 # Case 5
-![alt text](image.png)
+![alt text](screenshot/image.png)
     
 in this case, the alert trigger is sudoers file modificiation detected.
 
@@ -511,7 +511,7 @@ before going to investigation, i need to confirm this is an actual attack from s
     - Eradication --> remove access or malware --> reset password of compromised letsdefende1 account
 
     - Recovery --> restore normal operations safely --> re enable connection and confirming that only authorized user could have privileges
-    
+
     - Hardening --> prevent the same attack --> enable SSH key authentication
 
     
