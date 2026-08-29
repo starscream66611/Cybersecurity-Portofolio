@@ -322,6 +322,53 @@ but before that i need to know what Lazarus phishing Campaign is.
     - Remove malware, block phishing domain, and malicious download doamin.
     - Terminate process
 
+# Case 4 - CVE-2024-49138 Exploitation Detected
+
+![alt text](<screenshot/Screenshot 2026-08-29 at 10.20.05 PM.png>)
+
+Here, the alert says CVE-2024-49138 Exploitation Detected.
+the trigger reason is "Unusual or suspicious patterns of behavior linked to the hash have been identified, indicating potential exploitation of CVE-2024-49138".
+
+i start by collecting information based on this alert alone.
+
+- IOC 
+    
+    - Hostname: Victor
+    - IP Address: 172.16.17.207 - IPv4 - Private
+    - Hash: b432dcf4a0f0b601b1d79848467137a5e25cab5a0b7b1224be9d3b6540122db9
+    - Command Line: 
+    \??\C:\Windows\system32\conhost.exe 0xffffffff -ForceV1
+    - Process name: svohost.exe
+    - Path: "C:\temp\service_installer\svohost.exe"
+    - Process User: EC2AMAZ-ILGVOIN\LetsDefend
+
+with this information, im gonna use online threat intel to gather evidence.
+
+- Evidence 1 - Online Threat Intel
+
+    ![alt text](<screenshot/Screenshot 2026-08-29 at 10.31.11 PM.png>)
+    ![alt text](<screenshot/Screenshot 2026-08-29 at 10.32.18 PM.png>)
+
+    Based on the online threat intelligence the hash values are reported to be malicious with svohost.exe as the process name. 
+
+    at this point, the alert should be escalated to L2.
+
+- Report
+
+    Verdict: True Positive
+
+    Report:
+
+    At 2025-01-22T02:37:00+03:00 A suspicious activity related to "Windows Common Log File System Driver Elevation of Privilege Vulnerability" happen with IP 172.16.17.207 hostname victor. The hash values are reported to be malicious with svohost.exe as the file name. The process running on C:\temp\service_installer\ directory.
+
+    Further investigation needed to check whether the privilege escalation succeed or not.
+
+    Action: Pass to L2
+
+
+
+
+
+
 
     
-
