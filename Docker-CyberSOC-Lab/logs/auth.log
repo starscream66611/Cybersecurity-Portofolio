@@ -1,0 +1,4 @@
+Aug 31 02:43:35 victim sshd[4521]: Server listening on 0.0.0.0 port 22.
+Aug 31 02:43:35 victim sshd[4521]: Server listening on :: port 22.
+Aug 31 02:58:26 victim sshd[4534]: error: kex_exchange_identification: Connection closed by remote host
+Aug 31 02:58:26 victim sshd[4534]: Connection closed by 172.18.0.2 port 43742

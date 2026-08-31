@@ -1,0 +1,5 @@
+Aug 31 02:42:56 victim rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted.
+Aug 31 02:42:56 victim rsyslogd: activation of module imklog failed [v8.2112.0 try https://www.rsyslog.com/e/2145 ]
+Aug 31 02:42:56 victim rsyslogd: rsyslogd's groupid changed to 107
+Aug 31 02:42:56 victim rsyslogd: rsyslogd's userid changed to 105
+Aug 31 02:42:56 victim rsyslogd: [origin software="rsyslogd" swVersion="8.2112.0" x-pid="4516" x-info="https://www.rsyslog.com"] start

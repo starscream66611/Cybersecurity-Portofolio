@@ -1,0 +1,55 @@
+services:
+  splunk:
+    image: splunk/splunk:9.4
+    container_name: splunk
+    hostname: splunk
+    restart: unless-stopped
+
+    environment:
+      SPLUNK_START_ARGS: --accept-license
+      SPLUNK_PASSWORD: "CyberLab123!"
+      SPLUNK_HEC_TOKEN: "SOC-LAB-TOKEN-123456"
+
+    ports:
+      - "8000:8000"   # Splunk Web
+      - "8088:8088"   # HTTP Event Collector
+      - "9997:9997"   # Forwarder Port
+
+    volumes:
+      - splunk-data:/opt/splunk/var
+      - splunk-etc:/opt/splunk/etc
+      - ./logs:/logs 
+
+    networks:
+      - soc-net
+
+  victim:
+    image: ubuntu:22.04
+    container_name: victim-server
+    hostname: victim
+    tty: true
+    stdin_open: true
+
+    volumes:
+      - ./logs:/var/log/lab
+
+    networks:
+      - soc-net
+
+  attacker:
+    image: kalilinux/kali-rolling
+    container_name: attacker
+    hostname: attacker
+    tty: true
+    stdin_open: true
+
+    networks:
+      - soc-net
+
+volumes:
+  splunk-data:
+  splunk-etc:
+
+networks:
+  soc-net:
+    driver: bridge
