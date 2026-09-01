@@ -1,55 +1,114 @@
 services:
+  # ==========================
+  # ATTACKER (Kali Linux)
+  # ==========================
+  attacker:
+    build:
+      context: ./attacker
+    container_name: attacker
+    hostname: attacker
+
+    tty: true
+    stdin_open: true
+    init: true
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    mem_limit: 768m
+    mem_reservation: 512m
+    cpus: "1.0"
+
+    volumes:
+      - /Users/mhdadam/SecLists:/opt/SecLists:ro
+
+    restart: "no"
+
+    networks:
+      soc-net:
+        ipv4_address: 172.19.0.2
+
+  # ==========================
+  # VICTIM SERVER (Ubuntu)
+  # ==========================
+  victim:
+    build:
+      context: ./victim
+    container_name: victim-server
+    hostname: victim-server
+
+    init: true
+
+    mem_limit: 512m
+    mem_reservation: 384m
+    cpus: "0.75"
+
+    # Shared logs with Splunk
+    volumes:
+      - victim-logs:/shared-logs
+
+    restart: "no"
+
+    networks:
+      soc-net:
+        ipv4_address: 172.19.0.3
+
+  # ==========================
+  # SPLUNK ENTERPRISE
+  # ==========================
   splunk:
     image: splunk/splunk:9.4
     container_name: splunk
     hostname: splunk
-    restart: unless-stopped
+
+    # Starts only when requested
+    profiles:
+      - analysis
 
     environment:
       SPLUNK_START_ARGS: --accept-license
-      SPLUNK_PASSWORD: "CyberLab123!"
-      SPLUNK_HEC_TOKEN: "SOC-LAB-TOKEN-123456"
+      SPLUNK_PASSWORD: CyberSOC123!
+      SPLUNK_GENERAL_TERMS: --accept-sgt-current-at-splunk-com
 
     ports:
-      - "8000:8000"   # Splunk Web
-      - "8088:8088"   # HTTP Event Collector
-      - "9997:9997"   # Forwarder Port
+      - "8000:8000"
+      - "8088:8088"
+      - "9997:9997"
 
+    # Same shared log folder as victim
     volumes:
-      - splunk-data:/opt/splunk/var
-      - splunk-etc:/opt/splunk/etc
-      - ./logs:/logs 
+      - victim-logs:/shared-logs
+
+    mem_limit: 2g
+    mem_reservation: 1200m
+    cpus: "1.5"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 15s
+      retries: 30
+      start_period: 180s
+
+    restart: unless-stopped
 
     networks:
-      - soc-net
+      soc-net:
+        ipv4_address: 172.19.0.4
 
-  victim:
-    image: ubuntu:22.04
-    container_name: victim-server
-    hostname: victim
-    tty: true
-    stdin_open: true
-
-    volumes:
-      - ./logs:/var/log/lab
-
-    networks:
-      - soc-net
-
-  attacker:
-    image: kalilinux/kali-rolling
-    container_name: attacker
-    hostname: attacker
-    tty: true
-    stdin_open: true
-
-    networks:
-      - soc-net
-
-volumes:
-  splunk-data:
-  splunk-etc:
-
+# ==========================
+# NETWORK
+# ==========================
 networks:
   soc-net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+
+# ==========================
+# SHARED VOLUME FOR LIVE LOGS
+# ==========================
+volumes:
+  victim-logs:
