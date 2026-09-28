@@ -47,7 +47,7 @@ The first phase of any penetration testing is reconnaissance.
 
     Flag on port 8080: "MBPTL-3{f74dc48447423d67699b233c461227a4}"
 
-# Phase 2: Enumeration
+# Phase 2: Enumerations
 
 Because this is a website, im thinking of using enumeration tools like gobuster to find hidden directory.
 
@@ -66,7 +66,7 @@ Because this is a website, im thinking of using enumeration tools like gobuster 
     ![alt text](<../screenshot/Screenshot 2026-09-27 at 10.59.24 AM.png>)
     And here's the login page source code, the information that i could obtain there is, http method and no message for the wrong passwords.
 
-# Phase 3: Injection Vulnerabilities
+# Phase 3: SQL Injection
 
 Back to the library website,
 ![alt text](<../screenshot/Screenshot 2026-09-27 at 11.32.05 AM.png>)
@@ -108,7 +108,7 @@ If i click view details, the URL becomes
 
     Flag 7: "MBPTL-7{e77ac27271c6e54470db47228b9eca09}"
 
-# Phase 4: File upload
+# Phase 4: Post-Exploitation
 
 On the admin page there's file uploading button for image. This feature could be exploited by uploading malicious script.
 
@@ -147,7 +147,11 @@ The button is only accepting image, but we could delete the line and upload any 
 
     ![alt text](<../screenshot/Screenshot 2026-09-27 at 3.17.56 PM.png>)
 
-    and here's what i found,
+    Here's the interesting line,
+    ![alt text](<../screenshot/Screenshot 2026-09-28 at 2.14.41 PM.png>)
+    ![alt text](<../screenshot/Screenshot 2026-09-28 at 2.13.47 PM.png>)
+    ![alt text](<../screenshot/Screenshot 2026-09-28 at 2.15.36 PM.png>)
+    ![alt text](<../screenshot/Screenshot 2026-09-28 at 2.32.28 PM.png>)
     ![alt text](<../screenshot/Screenshot 2026-09-27 at 3.21.06 PM.png>)
 
     Flag 9: "MBPTL-9{74ac6fef30abfc98e8532548b9742050}"
