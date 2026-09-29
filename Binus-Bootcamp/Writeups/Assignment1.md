@@ -155,3 +155,53 @@ The button is only accepting image, but we could delete the line and upload any 
     ![alt text](<../screenshot/Screenshot 2026-09-27 at 3.21.06 PM.png>)
 
     Flag 9: "MBPTL-9{74ac6fef30abfc98e8532548b9742050}"
+
+# Phase 5: Log Analysis
+
+- Flag 10: Web Access Log Analysis
+
+    After obtaining the root privilege user, im trying to explore more about this machine, and access the log in this directory, 
+    
+    "/var/log/apache2"
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.12.37 AM.png>)
+    
+    Flag 10: MBPTL-10{c1835d7d28a5394b38cfbf6f813a1553}
+
+- Flag 11: Command History Analysis
+
+    Im checking the command history to obtain the flag. To do this, im going to explore directory on the machine.
+
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.21.08 AM.png>)
+
+    and i manage to go to /root directory and list the file. 
+    And here's what i found,
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.22.38 AM.png>)
+
+    .bash_history is the file that storing command history on this machine. 
+
+    Using command cat to see the file and i got this,
+
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.24.03 AM.png>)
+
+    Flag 11: MBPTL-11{c2090290b9012cd448129e26626c8cde}
+
+- Flag 12: Shell Configuration Analysis
+
+    Shell configuration are store on .bashrc according to google, 
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.28.44 AM.png>)
+
+    And the file that listed on /root
+
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.22.38 AM.png>)
+
+    There's .bashrc file and to see it im using command "cat .bashrc"
+
+    ![alt text](<../screenshot/Screenshot 2026-09-29 at 8.31.13 AM.png>)
+
+    Flag 12: MBPTL-12{a475806f05e0416bcd8cde2d02dfde95}
+
+# Phase 6: Network Pivoting
+
+- Flag 13: Network Pivoting
+
+    
